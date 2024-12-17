@@ -32,7 +32,6 @@ def db_connect():
     return conn, cur
 
 def db_close(conn, cur):
-
     conn.commit()
     cur.close()
     conn.close()
@@ -94,11 +93,8 @@ def login():
         cur.execute("SELECT * FROM users WHERE login=?;", (login,))
 
     user = cur.fetchone()
-    if not user:
-        db_close(conn,cur)
-        return render_template('login.html', error='Логин и/или пароль неверны')
-    if not check_password_hash (user['password'], password):
-        db_close(conn,cur)
+    if not user or not check_password_hash(user['password'], password):
+        db_close(conn, cur)
         return render_template('login.html', error='Логин и/или пароль неверны')
     session['login'] = login
     db_close(conn,cur)
