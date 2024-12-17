@@ -11,13 +11,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
 app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
-@app.route('/')
-def menu():
-    # Передаём статус пользователя в шаблон
-    user_status = session.get('login', 'Аноним')
-    return render_template('menu.html', user_status=user_status)
-
-
 def db_connect():
 #   Устанавливает подключение к базе данных.
     
@@ -43,6 +36,12 @@ def db_close(conn, cur):
     conn.commit()
     cur.close()
     conn.close()
+
+
+@app.route('/')
+def menu():
+    user_status = session.get('login', 'Аноним')
+    return render_template('menu.html', user_status=user_status)
 
 
 @app.route('/register', methods=['GET', 'POST'])
